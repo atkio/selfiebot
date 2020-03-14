@@ -208,7 +208,7 @@ namespace selfiebot
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine("reTweet:" + e.Message);
             }
 
         }
