@@ -14,30 +14,6 @@ namespace selfiebot
 
         public static void Download(List<WaitRecognizer> defs)
         {
-            if (!Directory.Exists(Config.PhotoTempPath))
-            {
-                Directory.CreateDirectory(Config.PhotoTempPath);
-            }
-
-            if (!Directory.Exists(Config.PhotoPornPath))
-            {
-                Directory.CreateDirectory(Config.PhotoPornPath);
-            }
-
-            if (!Directory.Exists(Config.PhotoRTPath))
-            {
-                Directory.CreateDirectory(Config.PhotoRTPath);
-            }
-
-            if (!Directory.Exists(Config.PhotoDeletePath))
-            {
-                Directory.CreateDirectory(Config.PhotoDeletePath);
-            }
-
-            if (!Directory.Exists(Config.PhotoSEXYPath))
-            {
-                Directory.CreateDirectory(Config.PhotoSEXYPath);
-            }
 
             var db = new SelfieBotDB();
             var stored = db.getAllWaitRecognizer().Select(nr => nr.TID).Distinct();

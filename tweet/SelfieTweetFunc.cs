@@ -144,6 +144,7 @@ namespace selfiebot
         /// </summary>
         public void ChkRecognized()
         {
+
             //色情推
             var pornfiles = Directory.GetFiles(Config.PhotoPornPath).Select(f => Path.GetFileName(f)).ToList();
             db.PornTweet(pornfiles);

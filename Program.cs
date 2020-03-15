@@ -1,9 +1,13 @@
+using System.IO;
+
 namespace selfiebot
 {
     class Program
     {
         static void Main(string[] args)
         {
+            initFolder();
+
             SelfieTweetFunc func = new SelfieTweetFunc();
 
             //检查已经识别的
@@ -22,5 +26,34 @@ namespace selfiebot
             func.ClearGarbTweet();
 
         }
+
+        static void initFolder()
+        {
+            if (!Directory.Exists(Config.PhotoTempPath))
+            {
+                Directory.CreateDirectory(Config.PhotoTempPath);
+            }
+
+            if (!Directory.Exists(Config.PhotoPornPath))
+            {
+                Directory.CreateDirectory(Config.PhotoPornPath);
+            }
+
+            if (!Directory.Exists(Config.PhotoRTPath))
+            {
+                Directory.CreateDirectory(Config.PhotoRTPath);
+            }
+
+            if (!Directory.Exists(Config.PhotoDeletePath))
+            {
+                Directory.CreateDirectory(Config.PhotoDeletePath);
+            }
+
+            if (!Directory.Exists(Config.PhotoSEXYPath))
+            {
+                Directory.CreateDirectory(Config.PhotoSEXYPath);
+            }
+        }
+
     }
 }
