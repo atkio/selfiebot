@@ -186,7 +186,7 @@ namespace selfiebot
                         TID = w.TID,
                         TW = w.Tweet
                     })
-                    .ToList()
+                    .Where(r => r.TW.Length >5)
                     .GroupBy(r => r.TW)
                     .Where(grp => grp.Select(r => r.UID).Distinct().Count() > 1)
                     .SelectMany(grp => grp)
