@@ -180,13 +180,15 @@ namespace selfiebot
             {
 
                 var grabids = db.WaitRecognizer
+                    .Where(r => !String.IsNullOrWhiteSpace(r.Tweet))     
+                    .Where(r => r.Tweet.Length >5)     
+                    .ToList()
                     .Select(w => new
                     {
                         UID = w.UID,
                         TID = w.TID,
                         TW = w.Tweet
-                    })
-                    .Where(r => r.TW.Length >5)
+                    })                    
                     .GroupBy(r => r.TW)
                     .Where(grp => grp.Select(r => r.UID).Distinct().Count() > 1)
                     .SelectMany(grp => grp)
