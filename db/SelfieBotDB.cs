@@ -180,15 +180,15 @@ namespace selfiebot
             {
 
                 var grabids = db.WaitRecognizer
-                    .Where(r => !String.IsNullOrWhiteSpace(r.Tweet))     
-                    .Where(r => r.Tweet.Length >5)     
+                    .Where(r => !String.IsNullOrWhiteSpace(r.Tweet))
+                    .Where(r => r.Tweet.Length > 5)
                     .ToList()
                     .Select(w => new
                     {
                         UID = w.UID,
                         TID = w.TID,
                         TW = w.Tweet
-                    })                    
+                    })
                     .GroupBy(r => r.TW)
                     .Where(grp => grp.Select(r => r.UID).Distinct().Count() > 1)
                     .SelectMany(grp => grp)
@@ -297,18 +297,16 @@ namespace selfiebot
         {
             using (var db = new TweetContext())
             {
-                var banids = db.WaitRecognizer
+                var PornTweets = db.WaitRecognizer
                 .Where(w => pornfiles.Contains(w.FILENAME))
-                .Select(w => w.UID)
+                .Select(w => w.TID)
                 .Distinct()
-                .Except(db.BandIDs.Select(b => b.ID))
                 .ToList();
 
-                db.BandIDs.AddRange(banids.Select(b => new BandIDs() { ID = b }));
-
                 var delRcg = db.WaitRecognizer
-                 .Where(w => banids.Contains(w.UID))
+                 .Where(w => PornTweets.Contains(w.TID))
                  .ToList();
+
                 db.WaitRecognizer.RemoveRange(delRcg);
                 db.SaveChanges();
             }
