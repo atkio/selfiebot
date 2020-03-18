@@ -216,11 +216,11 @@ namespace selfiebot
 
         public void RTAll()
         {
-            foreach (WaitRetweet rt in db.getWaitRetweet())
+            //根据推特API要求，3个小时300转推，保证3个小时运行一次
+            foreach (WaitRetweet rt in db.getWaitRetweet().Take(300))
             {
                 reTweet(rt.TID, rt.RANK == "1");
                 db.removeRetweet(rt);
-                Thread.Sleep(90 * 1000);
             }
         }
         #endregion
