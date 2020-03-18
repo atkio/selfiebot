@@ -61,7 +61,7 @@ def keras_load_images(path):
 def model1action(path, result):
     path = ''.join([chr(e) for e in path])
     resultlist = result.astype('str')
-    print(path, ":", resultlist)
+    # print(path, ":", resultlist)
     if "Girl" in resultlist and "Human face" in resultlist and not "Man" in resultlist:
         shutil.move(path, PATH_RT)
     else:
