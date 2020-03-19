@@ -1,26 +1,19 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import json
-import os
-import pathlib
 import shutil
-import threading
-import time
-from os import listdir, walk
+from os import listdir
 from os.path import isfile, join
-from pathlib import Path
 
 import numpy as np
-import tensorflow as tf
 import tensorflow_hub as hub
-from absl import app, flags, logging
+import tensorflow as tf
 from tensorflow import keras
 
 PATH_TEMP = "./TEMP"
 PATH_RT = "./RT"
 PATH_DEL = "./DEL"
-PATH_SEX = "./SEX"
+PATH_SEXY = "./SEXY"
 PATH_PORN = "./PORN"
 
 PATH_MODEL1 = "AIScript/model/facemodel"
@@ -58,29 +51,37 @@ def keras_load_images(path):
     return np.asarray(loaded_images), loaded_image_paths
 
 
-def model1action(path, result):
-    path = ''.join([chr(e) for e in path])
-    resultlist = result.astype('str')
+# 第一批处理 TEMP中分类
+temp_images = listimage(PATH_TEMP)
+if len(temp_images) < 1:
+    exit()
+
+detector1 = hub.load(PATH_MODEL1).signatures['default']
+list_ds = tf.data.Dataset.from_tensor_slices(
+    temp_images).map(tf_load_images, num_parallel_calls=128)
+
+detected_images = []
+detected_image_paths = []
+for converted_img, path in list_ds:
+    detected_images.append(detector1(converted_img)[
+                           'detection_class_entities'].numpy())
+    detected_image_paths.append(path.numpy())
+
+for i in range(len(detected_images)):
+    path = ''.join([chr(e) for e in detected_image_paths[i]])
+    resultlist = detected_images[i].astype('str')
     # print(path, ":", resultlist)
     if "Girl" in resultlist and "Human face" in resultlist and not "Man" in resultlist:
         shutil.move(path, PATH_RT)
     else:
         shutil.move(path, PATH_DEL)
 
-
-detector1 = hub.load(PATH_MODEL1).signatures['default']
-list_ds = tf.data.Dataset.from_tensor_slices(
-    listimage(PATH_TEMP)).map(tf_load_images, num_parallel_calls=128)
-for converted_img, path in list_ds:
-    result = detector1(converted_img)['detection_class_entities'].numpy()
-    path = path.numpy()
-    threading.Thread(target=model1action, args=(path, result)).start()
-
-time.sleep(120)
-
+# 第二批处理 RT中再分类
+images, image_paths = keras_load_images(PATH_RT)
+if len(images) < 1:
+    exit()
 
 model = tf.keras.models.load_model(PATH_MODEL2)
-images, image_paths = keras_load_images(PATH_RT)
 model_preds = model.predict(images)
 
 #categories = ['drawings', 'hentai', 'neutral', 'porn', 'sexy']
@@ -88,6 +89,6 @@ for i, single_preds in enumerate(model_preds):
     if float(single_preds[3]) > 0.7 or float(single_preds[1]) > 0.7:
         shutil.move(image_paths[i], PATH_PORN)
     elif float(single_preds[4]) > 0.7:
-        shutil.move(image_paths[i], PATH_SEX)
+        shutil.move(image_paths[i], PATH_SEXY)
     elif float(single_preds[0]) > 0.7:
         shutil.move(image_paths[i], PATH_DEL)
