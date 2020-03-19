@@ -20,6 +20,8 @@ PATH_PORN = "./PORN"
 PATH_MODEL1 = "AIScript/model/facemodel"
 # https://github.com/GantMan/nsfw_model
 PATH_MODEL2 = "AIScript/model/mobilenet_v2_140_224"
+# https://github.com/lbulygin/detect-porn
+PATH_MODEL3 = "AIScript/model/pornmodel/porn.hdf5"
 
 
 def listimage(image_paths):
@@ -83,14 +85,26 @@ images, image_paths = keras_load_images(PATH_RT)
 if len(images) < 1:
     exit()
 
+model = tf.keras.models.load_model(PATH_MODEL3)
+model_preds = model.predict(images)
+
+#print('Class indices: 0 - erotic, 1 - legal, 2 - porn')
+for i, single_preds in enumerate(model_preds):
+    if float(single_preds[2]) > 0.69:
+        shutil.move(image_paths[i], PATH_PORN)
+
+
+# 第三批处理 RT中再分类
+images, image_paths = keras_load_images(PATH_RT)
+if len(images) < 1:
+    exit()
+
 model = tf.keras.models.load_model(PATH_MODEL2)
 model_preds = model.predict(images)
 
 #categories = ['drawings', 'hentai', 'neutral', 'porn', 'sexy']
 for i, single_preds in enumerate(model_preds):
-    if float(single_preds[3]) > 0.7 or float(single_preds[1]) > 0.7:
+    if float(single_preds[3]) > 0.7 or float(single_preds[1]) > 0.9:
         shutil.move(image_paths[i], PATH_PORN)
-    elif float(single_preds[4]) > 0.7:
+    elif float(single_preds[4]) > 0.8:
         shutil.move(image_paths[i], PATH_SEXY)
-    elif float(single_preds[0]) > 0.7:
-        shutil.move(image_paths[i], PATH_DEL)
