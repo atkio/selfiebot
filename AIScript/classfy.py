@@ -16,7 +16,9 @@ PATH_DEL = "./DEL"
 PATH_SEXY = "./SEXY"
 PATH_PORN = "./PORN"
 
+# https://tfhub.dev/google/faster_rcnn/openimages_v4/inception_resnet_v2/1
 PATH_MODEL1 = "AIScript/model/facemodel"
+# https://github.com/GantMan/nsfw_model
 PATH_MODEL2 = "AIScript/model/mobilenet_v2_140_224"
 
 
