@@ -86,6 +86,6 @@ for i, single_preds in enumerate(model_preds):
     if float(single_preds[3]) > 0.7 or float(single_preds[1]) > 0.7:
         shutil.move(image_paths[i], PATH_PORN)
     elif float(single_preds[4]) > 0.7:
-        shutil.move(image_paths[i], PATH_SEX)
+        shutil.move(image_paths[i], PATH_SEXY)
     elif float(single_preds[0]) > 0.7:
         shutil.move(image_paths[i], PATH_DEL)
