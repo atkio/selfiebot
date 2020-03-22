@@ -136,11 +136,11 @@ namespace selfiebot
         /// </summary>
         public void SearchFavs()
         {
-
+            var bids = TweetHelper.GetBlockedIDs(authuser);
             foreach (var kv in db.getFavorites())
             {
                 ulong newid;
-                var result = TweetHelper.GetUserFavorites(authapp, kv.Key, kv.Value, out newid);
+                var result = TweetHelper.GetUserFavorites(authapp, kv.Key, kv.Value, out newid).Filter(bids);
                 db.setFavorites(kv.Key, newid);
                 if (result.Count > 0)
                 {
