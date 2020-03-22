@@ -132,6 +132,27 @@ namespace selfiebot
         }
 
         /// <summary>
+        /// 获取Favs
+        /// </summary>
+        public void SearchFavs()
+        {
+
+            foreach (var kv in db.getFavorites())
+            {
+                ulong newid;
+                var result = TweetHelper.GetUserFavorites(authapp, kv.Key, kv.Value, out newid);
+                db.setFavorites(kv.Key, newid);
+                if (result.Count > 0)
+                {
+                    var todownload = SelfieTweetFilter.GetImageURL(result).ToList();
+                    ImageDownloader.Download(todownload);
+                }
+            }
+
+
+        }
+
+        /// <summary>
         /// 清除重复文字的推
         /// </summary>
         public void ClearGarbTweet()

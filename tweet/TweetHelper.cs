@@ -258,5 +258,28 @@ namespace selfiebot
 
             return rslist;
         }
+
+        public static List<Favorites> GetUserFavorites(ApplicationOnlyAuthorizer authuser, string username, ulong mintid, out ulong retid)
+        {
+
+            if (mintid < MINTWITTERID) mintid = MINTWITTERID;
+            var twitterCtx = AuthTwitterContext(authuser);
+
+            retid = mintid;
+
+            var rslist =
+              (from fav in twitterCtx.Favorites
+               where fav.Type == FavoritesType.Favorites &&
+                     fav.ScreenName == username &&
+                     fav.SinceID == mintid
+               select fav)
+               .ToList();
+
+            if (rslist.Count > 0)
+            {
+                retid = rslist.Max(st => st.StatusID);
+            }
+            return rslist;
+        }
     }
 }

@@ -166,6 +166,27 @@ namespace selfiebot
             }
 
         }
+
+        public Dictionary<string, ulong> getFavorites()
+        {
+            using (var db = new TweetContext())
+            {
+                return db.WatchFavorites.ToDictionary(f => f.UID, f => ulong.Parse(f.SINCEID));
+            }
+        }
+
+        public void setFavorites(string uid, ulong sid)
+        {
+            using (var db = new TweetContext())
+            {
+                db.WatchFavorites
+                .Where(f => f.UID == uid)
+                .ToList()
+                .ForEach(f => f.SINCEID = sid.ToString());
+
+                db.SaveChanges();
+            }
+        }
         public List<WaitRecognizer> getAllWaitRecognizer()
         {
             using (var db = new TweetContext())

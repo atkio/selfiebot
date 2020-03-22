@@ -48,11 +48,50 @@ namespace selfiebot
         }
 
         /// <summary>
+        /// 过滤推文
+        /// </summary>
+        /// <param name="src">推文</param>
+        /// <returns></returns>
+        public static List<Favorites> Filter(this List<Favorites> src, List<string> blockedids)
+        {
+            var iblockedids = new List<string>();
+            iblockedids.AddRange(blockedids);
+            iblockedids.AddRange(BandIDs);
+            return src
+             .AsParallel()
+             .Where(tw => !BlockTexts.Any(bt => tw.Text.Contains(bt)) && /*推特文字过滤*/
+                          !iblockedids.Contains(tw.User.ScreenNameResponse) && /*推特黑名单过滤*/
+                          !NameBlockTexts.Any(bt => tw.User.Name.Contains(bt))  /*推特用户名过滤*/
+                    )
+            .ToList();
+        }
+
+
+        /// <summary>
         /// 从推文中获取图片链接
         /// </summary>
         /// <param name="src"></param>
         /// <returns></returns>
         public static List<WaitRecognizer> GetImageURL(this List<Status> src)
+        {
+            return src.Distinct()
+                   .SelectMany(s => urls(s), (s, url) =>
+                      new WaitRecognizer()
+                      {
+                          TID = s.StatusID.ToString(),
+                          UID = s.User.ScreenNameResponse,
+                          Tweet = s.Text.Substring(0, 10),
+                          PhotoUrl = url
+                      })
+                   .ToList();
+        }
+
+        /// <summary>
+        /// 从推文中获取图片链接
+        /// </summary>
+        /// <param name="src"></param>
+        /// <returns></returns>
+        public static List<WaitRecognizer> GetImageURL(this List<Favorites> src)
         {
             return src.Distinct()
                    .SelectMany(s => urls(s), (s, url) =>

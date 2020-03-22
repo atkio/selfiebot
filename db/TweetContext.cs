@@ -25,6 +25,8 @@ namespace selfiebot
 
         public DbSet<TwitterAPI> TwitterAPI { get; set; }
 
+        public DbSet<WatchFavorites> WatchFavorites { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlite("Data Source=selfie.db");
@@ -132,6 +134,15 @@ namespace selfiebot
         [Key]
         public string NAME { get; set; }
     }
+
+    public class WatchFavorites
+    {
+        [Key]
+        public string UID { get; set; }
+
+        public string SINCEID { get; set; }
+    }
+
     #endregion
 }
 

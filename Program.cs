@@ -22,6 +22,9 @@ namespace selfiebot
             //查找HomeTL
             func.SearchTimeline();
 
+            //查找Favs
+            func.SearchFavs();
+
             //清除垃圾推
             func.ClearGarbTweet();
 
