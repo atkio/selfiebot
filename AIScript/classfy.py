@@ -75,7 +75,7 @@ for i in range(len(detected_images)):
     path = ''.join([chr(e) for e in detected_image_paths[i]])
     resultlist = detected_images[i].astype('str')
     # print(path, ":", resultlist)
-    if "Girl" in resultlist and "Human face" in resultlist and "Man" not in resultlist:
+    if "Girl" in resultlist and "Human face" in resultlist and "Human eye" in resultlist and "Man" not in resultlist:
         shutil.move(path, PATH_RT)
     else:
         shutil.move(path, PATH_DEL)
