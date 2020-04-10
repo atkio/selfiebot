@@ -6,27 +6,34 @@ namespace selfiebot
     {
         static void Main(string[] args)
         {
-            initFolder();
+            try
+            {
+                initFolder();
 
-            SelfieTweetFunc func = new SelfieTweetFunc();
+                SelfieTweetFunc func = new SelfieTweetFunc();
 
-            //检查已经识别的
-            func.ChkRecognized();
+                //检查已经识别的
+                func.ChkRecognized();
 
-            //转推
-            func.RTAll();
+                //转推
+                func.RTAll();
 
-            //查找关键字
-            func.SearchTweets();
+                //查找关键字
+                func.SearchTweets();
 
-            //查找HomeTL
-            func.SearchTimeline();
+                //查找HomeTL
+                func.SearchTimeline();
 
-            //查找Favs
-            func.SearchFavs();
+                //查找Favs
+                func.SearchFavs();
 
-            //清除垃圾推
-            func.ClearGarbTweet();
+                //清除垃圾推
+                func.ClearGarbTweet();
+            }
+            finally
+            {
+
+            }
 
         }
 
